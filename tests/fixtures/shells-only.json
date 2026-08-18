@@ -1,0 +1,32 @@
+{
+  "version": "0.8.0",
+  "protocol": 19,
+  "focused_workspace_id": "w2",
+  "focused_tab_id": "w2:t1",
+  "focused_pane_id": "w2:p1",
+  "workspaces": [
+    {"workspace_id": "w1", "number": 1, "label": "notes", "focused": false, "pane_count": 1, "tab_count": 1, "active_tab_id": "w1:t1", "agent_status": "unknown"},
+    {"workspace_id": "w2", "number": 2, "label": "scratch", "focused": true, "pane_count": 3, "tab_count": 2, "active_tab_id": "w2:t1", "agent_status": "unknown"},
+    {"workspace_id": "w3", "number": 3, "label": "logs", "focused": false, "pane_count": 1, "tab_count": 1, "active_tab_id": "w3:t1", "agent_status": "unknown"}
+  ],
+  "tabs": [
+    {"tab_id": "w1:t1", "workspace_id": "w1", "number": 1, "label": "main", "focused": true, "pane_count": 1, "agent_status": "unknown"},
+    {"tab_id": "w2:t1", "workspace_id": "w2", "number": 1, "label": "edit", "focused": true, "pane_count": 2, "agent_status": "unknown"},
+    {"tab_id": "w2:t2", "workspace_id": "w2", "number": 2, "label": "run", "focused": false, "pane_count": 1, "agent_status": "unknown"},
+    {"tab_id": "w3:t1", "workspace_id": "w3", "number": 1, "label": "main", "focused": true, "pane_count": 1, "agent_status": "unknown"}
+  ],
+  "panes": [
+    {"pane_id": "w1:p1", "terminal_id": "t1", "workspace_id": "w1", "tab_id": "w1:t1", "focused": true, "agent_status": "unknown", "revision": 1,
+     "cwd": "/home/dev/notes", "foreground_cwd": "/home/dev/notes", "terminal_title": "bash", "terminal_title_stripped": "bash"},
+    {"pane_id": "w2:p1", "terminal_id": "t2", "workspace_id": "w2", "tab_id": "w2:t1", "focused": true, "agent_status": "unknown", "revision": 1,
+     "cwd": "/home/dev/src/kettle", "foreground_cwd": "/home/dev/src/kettle", "terminal_title": "nvim src/handler.rs", "terminal_title_stripped": "nvim src/handler.rs"},
+    {"pane_id": "w2:p2", "terminal_id": "t3", "workspace_id": "w2", "tab_id": "w2:t1", "focused": false, "agent_status": "unknown", "revision": 1,
+     "cwd": "/home/dev/src/kettle", "foreground_cwd": "/home/dev/src/kettle", "terminal_title": "cargo watch", "terminal_title_stripped": "cargo watch"},
+    {"pane_id": "w2:p3", "terminal_id": "t4", "workspace_id": "w2", "tab_id": "w2:t2", "focused": false, "agent_status": "unknown", "revision": 1,
+     "cwd": "/home/dev/src/kettle/docs", "foreground_cwd": "/home/dev/src/kettle/docs", "terminal_title": "mdbook serve", "terminal_title_stripped": "mdbook serve"},
+    {"pane_id": "w3:p1", "terminal_id": "t5", "workspace_id": "w3", "tab_id": "w3:t1", "focused": true, "agent_status": "unknown", "revision": 1,
+     "cwd": "/var/log", "foreground_cwd": "/var/log", "terminal_title": "journalctl -f", "terminal_title_stripped": "journalctl -f"}
+  ],
+  "layouts": [],
+  "agents": []
+}

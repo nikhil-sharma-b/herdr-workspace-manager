@@ -1,0 +1,24 @@
+id = "workspace-manager"
+name = "Workspace Manager"
+version = "0.1.0"
+min_herdr_version = "0.8.0"
+platforms = ["linux", "macos"]
+
+# The action is what a key binding invokes. It runs outside the popup, so it is
+# the component that moves focus once the popup has closed.
+[[actions]]
+id = "open"
+title = "Open workspace finder"
+description = "Fuzzy find workspaces, tabs, panes and agents, then jump to one"
+command = ["bash", "scripts/open.sh"]
+
+# Popup placement and geometry are manifest-only: the API rejects width/height
+# for any other placement, and `herdr plugin pane open --placement` cannot
+# request `popup`. Changing the size means editing this file.
+[[panes]]
+id = "finder"
+title = "Workspace finder"
+placement = "popup"
+width = "80%"
+height = "70%"
+command = ["bash", "scripts/finder.sh"]

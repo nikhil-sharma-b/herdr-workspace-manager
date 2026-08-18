@@ -1,0 +1,34 @@
+{
+  "version": "0.8.0",
+  "protocol": 19,
+  "focused_workspace_id": "w1",
+  "focused_tab_id": "w1:t1",
+  "focused_pane_id": "w1:p1",
+  "workspaces": [
+    {"workspace_id": "w1", "number": 1, "label": "kettle", "focused": true, "pane_count": 1, "tab_count": 1, "active_tab_id": "w1:t1", "agent_status": "unknown",
+     "worktree": {"repo_key": "/home/dev/src/kettle/.git", "repo_name": "kettle", "repo_root": "/home/dev/src/kettle", "checkout_path": "/home/dev/src/kettle", "is_linked_worktree": false}},
+    {"workspace_id": "w2", "number": 2, "label": "audit-logs", "focused": false, "pane_count": 1, "tab_count": 1, "active_tab_id": "w2:t1", "agent_status": "unknown",
+     "worktree": {"repo_key": "/home/dev/src/kettle/.git", "repo_name": "kettle", "repo_root": "/home/dev/src/kettle", "checkout_path": "/home/dev/.herdr/worktrees/kettle/audit-logs", "is_linked_worktree": true}},
+    {"workspace_id": "w3", "number": 3, "label": "retry-backoff", "focused": false, "pane_count": 1, "tab_count": 1, "active_tab_id": "w3:t1", "agent_status": "unknown",
+     "worktree": {"repo_key": "/home/dev/src/kettle/.git", "repo_name": "kettle", "repo_root": "/home/dev/src/kettle", "checkout_path": "/home/dev/.herdr/worktrees/kettle/retry-backoff", "is_linked_worktree": true}},
+    {"workspace_id": "w4", "number": 4, "label": "plain", "focused": false, "pane_count": 1, "tab_count": 1, "active_tab_id": "w4:t1", "agent_status": "unknown"}
+  ],
+  "tabs": [
+    {"tab_id": "w1:t1", "workspace_id": "w1", "number": 1, "label": "main", "focused": true, "pane_count": 1, "agent_status": "unknown"},
+    {"tab_id": "w2:t1", "workspace_id": "w2", "number": 1, "label": "main", "focused": true, "pane_count": 1, "agent_status": "unknown"},
+    {"tab_id": "w3:t1", "workspace_id": "w3", "number": 1, "label": "main", "focused": true, "pane_count": 1, "agent_status": "unknown"},
+    {"tab_id": "w4:t1", "workspace_id": "w4", "number": 1, "label": "main", "focused": true, "pane_count": 1, "agent_status": "unknown"}
+  ],
+  "panes": [
+    {"pane_id": "w1:p1", "terminal_id": "t1", "workspace_id": "w1", "tab_id": "w1:t1", "focused": true, "agent_status": "unknown", "revision": 1,
+     "cwd": "/home/dev/src/kettle", "foreground_cwd": "/home/dev/src/kettle", "terminal_title": "bash", "terminal_title_stripped": "bash"},
+    {"pane_id": "w2:p1", "terminal_id": "t2", "workspace_id": "w2", "tab_id": "w2:t1", "focused": true, "agent_status": "unknown", "revision": 1,
+     "cwd": "/home/dev/.herdr/worktrees/kettle/audit-logs", "foreground_cwd": "/home/dev/.herdr/worktrees/kettle/audit-logs", "terminal_title": "bash", "terminal_title_stripped": "bash"},
+    {"pane_id": "w3:p1", "terminal_id": "t3", "workspace_id": "w3", "tab_id": "w3:t1", "focused": true, "agent_status": "unknown", "revision": 1,
+     "cwd": "/home/dev/.herdr/worktrees/kettle/retry-backoff", "foreground_cwd": "/home/dev/.herdr/worktrees/kettle/retry-backoff", "terminal_title": "bash", "terminal_title_stripped": "bash"},
+    {"pane_id": "w4:p1", "terminal_id": "t4", "workspace_id": "w4", "tab_id": "w4:t1", "focused": true, "agent_status": "unknown", "revision": 1,
+     "cwd": "/home/dev/tmp", "foreground_cwd": "/home/dev/tmp", "terminal_title": "bash", "terminal_title_stripped": "bash"}
+  ],
+  "layouts": [],
+  "agents": []
+}

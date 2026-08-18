@@ -1,0 +1,42 @@
+{
+  "version": "0.8.0",
+  "protocol": 19,
+  "focused_workspace_id": "w1",
+  "focused_tab_id": "w1:t1",
+  "focused_pane_id": "w1:p2",
+  "workspaces": [
+    {"workspace_id": "w1", "number": 1, "label": "kettle", "focused": true, "pane_count": 2, "tab_count": 1, "active_tab_id": "w1:t1", "agent_status": "blocked"},
+    {"workspace_id": "w2", "number": 2, "label": "docs", "focused": false, "pane_count": 1, "tab_count": 1, "active_tab_id": "w2:t1", "agent_status": "unknown"},
+    {"workspace_id": "w3", "number": 3, "label": "review", "focused": false, "pane_count": 3, "tab_count": 1, "active_tab_id": "w3:t1", "agent_status": "working"}
+  ],
+  "tabs": [
+    {"tab_id": "w1:t1", "workspace_id": "w1", "number": 1, "label": "main", "focused": true, "pane_count": 2, "agent_status": "blocked"},
+    {"tab_id": "w2:t1", "workspace_id": "w2", "number": 1, "label": "main", "focused": true, "pane_count": 1, "agent_status": "unknown"},
+    {"tab_id": "w3:t1", "workspace_id": "w3", "number": 1, "label": "main", "focused": true, "pane_count": 3, "agent_status": "working"}
+  ],
+  "panes": [
+    {"pane_id": "w1:p1", "terminal_id": "t1", "workspace_id": "w1", "tab_id": "w1:t1", "focused": false, "agent_status": "unknown", "revision": 1,
+     "cwd": "/home/dev/src/kettle", "foreground_cwd": "/home/dev/src/kettle", "terminal_title": "bash", "terminal_title_stripped": "bash"},
+    {"pane_id": "w1:p2", "terminal_id": "t2", "workspace_id": "w1", "tab_id": "w1:t1", "focused": true, "agent_status": "blocked", "revision": 1,
+     "cwd": "/home/dev/src/kettle", "foreground_cwd": "/home/dev/src/kettle", "terminal_title": "claude", "terminal_title_stripped": "claude", "agent": "claude"},
+    {"pane_id": "w2:p1", "terminal_id": "t3", "workspace_id": "w2", "tab_id": "w2:t1", "focused": true, "agent_status": "unknown", "revision": 1,
+     "cwd": "/home/dev/src/handbook", "foreground_cwd": "/home/dev/src/handbook", "terminal_title": "vim", "terminal_title_stripped": "vim"},
+    {"pane_id": "w3:p1", "terminal_id": "t4", "workspace_id": "w3", "tab_id": "w3:t1", "focused": true, "agent_status": "working", "revision": 1,
+     "cwd": "/home/dev/src/kettle", "foreground_cwd": "/home/dev/src/kettle", "terminal_title": "codex", "terminal_title_stripped": "codex", "agent": "codex"},
+    {"pane_id": "w3:p2", "terminal_id": "t5", "workspace_id": "w3", "tab_id": "w3:t1", "focused": false, "agent_status": "done", "revision": 1,
+     "cwd": "/home/dev/src/kettle", "foreground_cwd": "/home/dev/src/kettle", "terminal_title": "claude", "terminal_title_stripped": "claude", "agent": "claude"},
+    {"pane_id": "w3:p3", "terminal_id": "t6", "workspace_id": "w3", "tab_id": "w3:t1", "focused": false, "agent_status": "idle", "revision": 1,
+     "cwd": "/home/dev/src/kettle", "foreground_cwd": "/home/dev/src/kettle", "terminal_title": "claude", "terminal_title_stripped": "claude", "agent": "claude"}
+  ],
+  "layouts": [],
+  "agents": [
+    {"terminal_id": "t2", "pane_id": "w1:p2", "workspace_id": "w1", "tab_id": "w1:t1", "focused": true, "revision": 1,
+     "agent": "claude", "name": "kettle-refactor", "agent_status": "blocked", "cwd": "/home/dev/src/kettle"},
+    {"terminal_id": "t4", "pane_id": "w3:p1", "workspace_id": "w3", "tab_id": "w3:t1", "focused": true, "revision": 1,
+     "agent": "codex", "name": "reviewer", "agent_status": "working", "cwd": "/home/dev/src/kettle"},
+    {"terminal_id": "t5", "pane_id": "w3:p2", "workspace_id": "w3", "tab_id": "w3:t1", "focused": false, "revision": 1,
+     "agent": "claude", "name": "changelog", "agent_status": "done", "cwd": "/home/dev/src/kettle"},
+    {"terminal_id": "t6", "pane_id": "w3:p3", "workspace_id": "w3", "tab_id": "w3:t1", "focused": false, "revision": 1,
+     "agent": "claude", "name": "idler", "agent_status": "idle", "cwd": "/home/dev/src/kettle"}
+  ]
+}
