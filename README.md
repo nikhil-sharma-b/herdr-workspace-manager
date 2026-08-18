@@ -70,7 +70,7 @@ supported and nothing in the plugin depends on which key you choose.
 | `Ctrl-n` | create a workspace, then land in it |
 | `Ctrl-x` | close the pane or workspace the highlighted row stands for |
 | `Ctrl-r` | re-read the session and redraw |
-| `Ctrl-p` | toggle the preview |
+| `Ctrl-p` | toggle the preview, and remember the choice |
 
 The prompt always names the active view, so which of the three lists you are looking at is
 never ambiguous.
@@ -144,15 +144,23 @@ it, because herdr tears that group down without asking.
 
 ## Configuration
 
+### The preview
+
+The preview is **off by default** — the list is what the finder is for, and a preview costs
+half the width. `Ctrl-p` turns it on, and that choice sticks: it is recorded in the
+plugin's state directory, so the next finder opens the way you left it. fzf's own toggle
+only lives as long as one popup, which is why the plugin records the state itself.
+
 Optional, at `$(herdr plugin config-dir workspace-manager)/config.toml`:
 
 ```toml
-preview = true       # show the preview when the finder opens
+preview = false      # whether the finder opens with a preview, before you toggle anything
 preview_size = 50    # percent of the popup width the preview occupies (10–90)
 ```
 
 An absent, empty or malformed file falls back to these defaults rather than breaking the
-finder.
+finder. A `Ctrl-p` you pressed outranks the file — it is the more recent thing you said —
+so set `preview = true` for a starting value, and use the key to change your mind.
 
 **The popup's width and height are not configurable from this file.** They live in
 `herdr-plugin.toml`:

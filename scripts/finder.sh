@@ -60,6 +60,7 @@ missing=$(hwm_missing_tools)
 [[ -z $missing ]] || fail "workspace-manager needs: $missing"
 
 hwm_load_config
+hwm_load_preview_state
 
 width=$(tput cols 2>/dev/null || printf '')
 [[ $width =~ ^[0-9]+$ ]] || width=200
@@ -73,6 +74,8 @@ fi
 
 preview_window="right,${HWM_PREVIEW_SIZE}%,border-left"
 ((HWM_PREVIEW_ENABLED)) || preview_window="$preview_window,hidden"
+
+hwm_record_preview_state
 
 set +e
 "$(command -v fzf)" \
@@ -98,7 +101,7 @@ set +e
   --header-first \
   --preview="$script_dir/preview.sh {1}" \
   --preview-window="$preview_window" \
-  --bind="ctrl-p:toggle-preview" \
+  --bind="ctrl-p:toggle-preview+execute-silent($script_dir/toggle-preview.sh)" \
   --bind="ctrl-r:reload($script_dir/refresh.sh)" \
   --bind="ctrl-a:transform($script_dir/cycle-mode.sh {1})" \
   --bind="ctrl-n:execute($script_dir/create.sh {2})+transform($script_dir/after-create.sh)" \

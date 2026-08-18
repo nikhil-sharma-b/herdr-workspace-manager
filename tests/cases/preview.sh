@@ -63,10 +63,11 @@ assert_eq "$before" "$(md5sum <"$run_dir/snapshot.json")" "snapshot after a prev
 # --- configuration ----------------------------------------------------------
 
 check "configuration controls whether the preview shows and how big it is"
+# The shipped default is off, so this file asks for it on to prove the file is read.
 config_dir=$(mktemp -d "${TMPDIR:-/tmp}/hwm-config.XXXXXX")
 cat >"$config_dir/config.toml" <<'CONF'
 # workspace-manager
-preview = false
+preview = true
 preview_size = 35
 CONF
 read -r enabled size < <(
@@ -75,7 +76,7 @@ read -r enabled size < <(
     hwm_load_config
     printf "%s %s\n" "$HWM_PREVIEW_ENABLED" "$HWM_PREVIEW_SIZE"'
 )
-assert_eq "0" "$enabled" "preview disabled by configuration"
+assert_eq "1" "$enabled" "preview enabled by configuration"
 assert_eq "35" "$size" "preview size from configuration"
 
 check "malformed or absent configuration falls back to defaults"
@@ -86,7 +87,7 @@ read -r enabled size < <(
     hwm_load_config
     printf "%s %s\n" "$HWM_PREVIEW_ENABLED" "$HWM_PREVIEW_SIZE"'
 )
-assert_eq "1" "$enabled" "preview default after malformed configuration"
+assert_eq "0" "$enabled" "preview default after malformed configuration"
 assert_eq "50" "$size" "preview size default after malformed configuration"
 
 : >"$config_dir/config.toml"
@@ -96,7 +97,64 @@ read -r enabled size < <(
     hwm_load_config
     printf "%s %s\n" "$HWM_PREVIEW_ENABLED" "$HWM_PREVIEW_SIZE"'
 )
-assert_eq "1" "$enabled" "preview default with an empty configuration"
+assert_eq "0" "$enabled" "preview default with an empty configuration"
 
 rm -rf "$config_dir" "$run_dir"
 printf 'y\n' | HWM_RUN_DIR=/tmp "$REPO_DIR/scripts/close.sh" "c|$pw|$pw:t1|$pane" >/dev/null 2>&1 || true
+
+# --- the preview is off until asked for, and the answer sticks ---------------
+
+preview_setting() {
+  HERDR_PLUGIN_CONFIG_DIR=${1:-/nonexistent} HERDR_PLUGIN_STATE_DIR=${2:?} bash -c '
+    source "'"$REPO_DIR"'/scripts/lib/common.sh"
+    hwm_load_config
+    hwm_load_preview_state
+    printf "%s" "$HWM_PREVIEW_ENABLED"'
+}
+
+check "the preview is off by default"
+state=$(mktemp -d "${TMPDIR:-/tmp}/hwm-pstate.XXXXXX")
+assert_eq "0" "$(preview_setting /nonexistent "$state")" "default preview setting"
+
+check "toggling records the choice, and the next finder honours it"
+HERDR_PLUGIN_STATE_DIR=$state "$REPO_DIR/scripts/toggle-preview.sh"
+assert_eq "on" "$(<"$state/preview")" "recorded state after one toggle"
+assert_eq "1" "$(preview_setting /nonexistent "$state")" "preview setting after toggling on"
+
+check "toggling back records that too"
+HERDR_PLUGIN_STATE_DIR=$state "$REPO_DIR/scripts/toggle-preview.sh"
+assert_eq "off" "$(<"$state/preview")" "recorded state after two toggles"
+assert_eq "0" "$(preview_setting /nonexistent "$state")" "preview setting after toggling off"
+
+check "a recorded choice outranks the configuration file"
+conf=$(mktemp -d "${TMPDIR:-/tmp}/hwm-pconf.XXXXXX")
+printf 'preview = false\n' >"$conf/config.toml"
+printf 'on' >"$state/preview"
+assert_eq "1" "$(preview_setting "$conf" "$state")" "recorded on over configured off"
+printf 'preview = true\n' >"$conf/config.toml"
+printf 'off' >"$state/preview"
+assert_eq "0" "$(preview_setting "$conf" "$state")" "recorded off over configured on"
+
+check "configuration still decides the starting value before anything is toggled"
+rm -f "$state/preview"
+printf 'preview = true\n' >"$conf/config.toml"
+assert_eq "1" "$(preview_setting "$conf" "$state")" "configured on with no record"
+
+check "an unreadable record falls back to the default rather than breaking"
+printf 'banana' >"$state/preview"
+assert_eq "1" "$(preview_setting "$conf" "$state")" "malformed record keeps the configured value"
+rm -rf "$conf" "$state"
+
+check "a popup records the value it opened with, so the first toggle flips correctly"
+state=$(mktemp -d "${TMPDIR:-/tmp}/hwm-pseed.XXXXXX")
+conf=$(mktemp -d "${TMPDIR:-/tmp}/hwm-pseedconf.XXXXXX")
+printf 'preview = true\n' >"$conf/config.toml"
+HERDR_PLUGIN_CONFIG_DIR=$conf HERDR_PLUGIN_STATE_DIR=$state bash -c '
+  source "'"$REPO_DIR"'/scripts/lib/common.sh"
+  hwm_load_config
+  hwm_load_preview_state
+  hwm_record_preview_state'
+assert_eq "on" "$(<"$state/preview")" "state recorded when the config opens the preview"
+HERDR_PLUGIN_STATE_DIR=$state "$REPO_DIR/scripts/toggle-preview.sh"
+assert_eq "off" "$(<"$state/preview")" "first toggle turns a configured-on preview off"
+rm -rf "$state" "$conf"

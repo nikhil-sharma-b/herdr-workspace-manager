@@ -287,8 +287,11 @@ arrives it does not first mean something else.
 ### Configuration
 
 - Popup geometry: manifest only, documented as such.
-- Optional configuration file in the plugin's herdr-provided config directory, covering
-  preview on/off and preview size.
+- The preview is off unless asked for. `Ctrl-p` turns it on and the choice persists in the
+  plugin's state directory, because fzf's own toggle is runtime state inside one process
+  and every invocation is a new process. A recorded choice outranks the configuration file.
+- Optional configuration file in the plugin's herdr-provided config directory, covering the
+  preview's starting on/off value and its size.
 - Everything else — colors, glyphs, key bindings, sort order — is hardcoded in v1.
 
 ### Error handling

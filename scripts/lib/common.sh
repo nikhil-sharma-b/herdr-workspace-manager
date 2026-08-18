@@ -117,7 +117,10 @@ hwm_missing_tools() {
 # tiny, forgiving subset is read: `key = value` lines. Anything unparseable is
 # ignored so a malformed file can never break the finder.
 
-HWM_PREVIEW_ENABLED=1
+# The preview is off unless asked for: the list is what the finder is for, and a
+# preview costs half the width. Ctrl-p turns it on, and that choice sticks (see
+# hwm_load_preview_state).
+HWM_PREVIEW_ENABLED=0
 HWM_PREVIEW_SIZE=50
 
 hwm_load_config() {
@@ -144,5 +147,34 @@ hwm_load_config() {
         ;;
     esac
   done <"$file"
+  return 0
+}
+
+# Ctrl-p's choice outlives the popup. fzf's own toggle is runtime state inside
+# one process, and every invocation is a new process, so the finder records the
+# state itself and reads it back here. A recorded choice outranks the config
+# file: it is the more recent thing the user said.
+hwm_preview_state_file() { printf '%s/preview' "$(hwm_state_dir)"; }
+
+hwm_load_preview_state() {
+  local file
+  file=$(hwm_preview_state_file)
+  [[ -f $file ]] || return 0
+  case $(<"$file") in
+    on) HWM_PREVIEW_ENABLED=1 ;;
+    off) HWM_PREVIEW_ENABLED=0 ;;
+  esac
+  return 0
+}
+
+# Record what a popup actually opened with, so the first Ctrl-p flips the stored
+# value the right way even when the config file, not a previous toggle, chose
+# the starting value.
+hwm_record_preview_state() {
+  if ((HWM_PREVIEW_ENABLED)); then
+    printf 'on' >"$(hwm_preview_state_file)"
+  else
+    printf 'off' >"$(hwm_preview_state_file)"
+  fi
   return 0
 }

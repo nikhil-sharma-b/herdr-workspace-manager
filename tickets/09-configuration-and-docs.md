@@ -37,3 +37,9 @@ cannot change geometry would be a trap.
 **Implementation note:** the README also documents a dependency the spec did not
 anticipate — `socat` (or `python3`) — because `herdr pane focus` is direction-only and
 focusing a pane by id needs the socket API directly.
+
+**Revised after use:** the preview now defaults to *off*, and `Ctrl-p` persists its state
+in the plugin's state directory so the choice survives closing the finder. Originally the
+toggle was per-popup only and the preview defaulted on, which meant hiding it never stuck —
+the next press brought it back. The configuration file still sets the starting value; a
+recorded toggle outranks it as the more recent instruction.
