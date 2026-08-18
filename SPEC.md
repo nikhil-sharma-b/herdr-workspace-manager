@@ -206,8 +206,11 @@ verb.
 
 ### Data acquisition
 
-- Exactly one `session.snapshot` request per refresh, yielding workspaces, tabs, panes,
-  agents and layouts together. Rows are built from that single document with `jq`.
+- One `session.snapshot` request per refresh, yielding workspaces, tabs, panes, agents and
+  layouts together, plus one `pane.process_info` request per pane to learn what each pane
+  is actually running. The snapshot cannot answer that: `terminal_title` is whatever the
+  shell sets, which for fish is the working directory. The enriched document is what rows
+  are built from, so row construction stays a pure transformation of one document.
 - No queries are issued while the user types or moves the selection; the preview is the
   only per-selection call.
 - Refresh happens on open, on `Ctrl-r`, and after a successful create or close. No
@@ -225,7 +228,9 @@ Row fields, all included in the fuzzy haystack:
 - agent kind and agent name
 - agent status
 - working directory
-- pane terminal title
+- pane name: an explicit `pane.rename` label if there is one, else what the pane is
+  running with its arguments, else the pane's terminal title. All three stay in the
+  haystack whichever is displayed.
 
 Row types:
 

@@ -88,6 +88,28 @@ something else.
 - **panes** — one row per pane, nothing collapsed.
 - **agents** — only panes with a detected agent.
 
+### How panes are named
+
+A pane's name is, in order of precedence:
+
+1. the name you gave it with `herdr pane rename`, if you gave it one
+2. **what the pane is running** — `lazygit`, `nvim src/handler.rs` — with arguments kept, so
+   two editors on different files stay distinguishable
+3. the terminal title, for a pane sitting idle at its shell prompt
+
+The second one is why the finder is worth having if your shell sets the title to the
+working directory, as fish does: `terminal_title` then says `/h/d/r/chat` for every pane in
+a repository, which names none of them. All three are searchable, so a pane you renamed is
+still findable by what it is running, and vice versa.
+
+Nothing is written to your session — the names live in the finder only, and herdr's own
+sidebar and tab bar are untouched.
+
+This is the finder's one departure from "a refresh costs a single request": reading what a
+pane runs is a per-pane call, so a refresh costs one snapshot plus one lookup per pane, a
+few milliseconds each. It is paid on open, on `Ctrl-r` and after a create or close — never
+while you type or move the selection.
+
 ### Status
 
 Each row carries a status glyph, coloured from the terminal's ANSI palette:

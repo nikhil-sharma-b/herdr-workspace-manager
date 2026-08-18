@@ -1,0 +1,58 @@
+{
+  "version": "0.8.0",
+  "protocol": 19,
+  "focused_workspace_id": "w1",
+  "focused_tab_id": "w1:t1",
+  "focused_pane_id": "w1:p1",
+  "workspaces": [
+    {"workspace_id": "w1", "number": 1, "label": "chat", "focused": true, "pane_count": 4, "tab_count": 1, "active_tab_id": "w1:t1", "agent_status": "idle"},
+    {"workspace_id": "w2", "number": 2, "label": "idle-shells", "focused": false, "pane_count": 1, "tab_count": 1, "active_tab_id": "w2:t1", "agent_status": "unknown"}
+  ],
+  "tabs": [
+    {"tab_id": "w1:t1", "workspace_id": "w1", "number": 1, "label": "main", "focused": true, "pane_count": 4, "agent_status": "idle"},
+    {"tab_id": "w2:t1", "workspace_id": "w2", "number": 1, "label": "main", "focused": true, "pane_count": 1, "agent_status": "unknown"}
+  ],
+  "panes": [
+    {"pane_id": "w1:p1", "terminal_id": "t1", "workspace_id": "w1", "tab_id": "w1:t1", "focused": true, "agent_status": "unknown", "revision": 1,
+     "cwd": "/home/dev/repos/chat", "foreground_cwd": "/home/dev/repos/chat",
+     "terminal_title": "/h/d/r/chat", "terminal_title_stripped": "/h/d/r/chat",
+     "process": {"pane_id": "w1:p1", "shell_pid": 100, "foreground_process_group_id": 400,
+                 "foreground_processes": [
+                   {"pid": 400, "name": "lazygit", "argv": ["/usr/bin/lazygit"], "cmdline": "/usr/bin/lazygit", "cwd": "/home/dev/repos/chat"}
+                 ]}},
+
+    {"pane_id": "w1:p2", "terminal_id": "t2", "workspace_id": "w1", "tab_id": "w1:t1", "focused": false, "agent_status": "unknown", "revision": 1,
+     "cwd": "/home/dev/repos/chat", "foreground_cwd": "/home/dev/repos/chat",
+     "terminal_title": "/h/d/r/chat", "terminal_title_stripped": "/h/d/r/chat",
+     "process": {"pane_id": "w1:p2", "shell_pid": 101, "foreground_process_group_id": 401,
+                 "foreground_processes": [
+                   {"pid": 401, "name": "nvim", "argv": ["/usr/bin/nvim", "src/handler.rs"], "cmdline": "/usr/bin/nvim src/handler.rs", "cwd": "/home/dev/repos/chat"}
+                 ]}},
+
+    {"pane_id": "w1:p3", "terminal_id": "t3", "workspace_id": "w1", "tab_id": "w1:t1", "focused": false, "agent_status": "unknown", "revision": 1,
+     "cwd": "/home/dev/repos/chat", "foreground_cwd": "/home/dev/repos/chat",
+     "terminal_title": "titled by the shell", "terminal_title_stripped": "titled by the shell",
+     "process": {"pane_id": "w1:p3", "shell_pid": 102, "foreground_process_group_id": 102,
+                 "foreground_processes": [
+                   {"pid": 102, "name": "fish", "argv": ["/usr/bin/fish"], "cmdline": "/usr/bin/fish", "cwd": "/home/dev/repos/chat"}
+                 ]}},
+
+    {"pane_id": "w1:p4", "terminal_id": "t4", "workspace_id": "w1", "tab_id": "w1:t1", "focused": false, "agent_status": "idle", "revision": 1,
+     "label": "the important one",
+     "cwd": "/home/dev/repos/chat", "foreground_cwd": "/home/dev/repos/chat",
+     "terminal_title": "claude", "terminal_title_stripped": "claude", "agent": "claude",
+     "process": {"pane_id": "w1:p4", "shell_pid": 103, "foreground_process_group_id": 403,
+                 "foreground_processes": [
+                   {"pid": 403, "name": "claude", "argv": ["/usr/bin/claude"], "cmdline": "/usr/bin/claude", "cwd": "/home/dev/repos/chat"}
+                 ]}},
+
+    {"pane_id": "w2:p1", "terminal_id": "t5", "workspace_id": "w2", "tab_id": "w2:t1", "focused": true, "agent_status": "unknown", "revision": 1,
+     "cwd": "/home/dev", "foreground_cwd": "/home/dev",
+     "terminal_title": "~", "terminal_title_stripped": "~"}
+  ],
+  "layouts": [],
+  "agents": [
+    {"terminal_id": "t4", "pane_id": "w1:p4", "workspace_id": "w1", "tab_id": "w1:t1", "focused": false, "revision": 1,
+     "agent": "claude", "name": "helper", "agent_status": "idle", "cwd": "/home/dev/repos/chat"}
+  ]
+}

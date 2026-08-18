@@ -70,3 +70,52 @@ while IFS= read -r target; do
   [[ $target =~ ^[pc]\|w[0-9]+\|w[0-9]+:t[0-9]+\|w[0-9]+:p[0-9]+$ ]] ||
     fail "malformed target [$target]"
 done < <(rows mixed-agents.json --mode expanded | targets)
+
+# --- what a pane is running -------------------------------------------------
+
+check "a pane running a program is named for that program"
+assert_contains "$(rows processes.json --mode expanded | grep '^p|w1|w1:t1|w1:p1' | cut -f3 | strip_ansi)" \
+  "lazygit" "process name"
+
+check "the program's arguments are kept, so two nvims are distinguishable"
+assert_contains "$(rows processes.json --mode expanded | grep '^p|w1|w1:t1|w1:p2' | cut -f3 | strip_ansi)" \
+  "nvim src/handler.rs" "process command line"
+
+check "a pane idling at its shell prompt keeps the terminal title"
+row=$(rows processes.json --mode expanded | grep '^p|w1|w1:t1|w1:p3' | cut -f3 | strip_ansi)
+assert_contains "$row" "titled by the shell" "idle pane name"
+assert_not_contains "$row" "fish" "idle pane name"
+
+check "an explicit pane rename outranks the process"
+row=$(rows processes.json --mode expanded | grep '^p|w1|w1:t1|w1:p4' | cut -f3 | strip_ansi)
+assert_contains "$row" "the important one" "renamed pane"
+
+check "a pane herdr reports no process for still renders"
+assert_contains "$(rows processes.json --mode expanded | grep '^p|w2' | cut -f3 | strip_ansi)" \
+  "idle-shells" "pane with no process record"
+
+check "typing a program name selects the pane running it"
+assert_eq "p|w1|w1:t1|w1:p1" \
+  "$(rows processes.json --mode expanded | filter_rows lazygit | targets)" \
+  "process-name match"
+
+check "a program's arguments are searchable too"
+assert_eq "p|w1|w1:t1|w1:p2" \
+  "$(rows processes.json --mode expanded | filter_rows handler.rs | targets)" \
+  "process-argument match"
+
+check "a renamed pane is still findable by what it is running"
+assert_eq "p|w1|w1:t1|w1:p4" \
+  "$(rows processes.json --mode agents | filter_rows claude | targets)" \
+  "renamed pane found by process"
+
+check "a workspace row matches a program running inside it"
+assert_eq "c|w1|w1:t1|w1:p1" \
+  "$(rows processes.json --mode collapsed | filter_rows lazygit | targets)" \
+  "hidden process match on a workspace row"
+
+check "the row builder is unaffected by snapshots that carry no process records"
+assert_eq "$(rows shells-only.json --mode expanded | md5sum)" \
+  "$(rows shells-only.json --mode expanded | md5sum)" "rows without process records"
+assert_contains "$(rows shells-only.json --mode expanded | grep '^p|w2|w2:t2' | cut -f3 | strip_ansi)" \
+  "mdbook serve" "terminal title still used when no process is known"

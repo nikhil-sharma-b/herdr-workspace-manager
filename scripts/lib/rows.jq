@@ -50,6 +50,33 @@ def basename: (. // "") | split("/") | map(select(. != "")) | (last // "");
 
 def clean: (. // "") | gsub("[\t\r\n]"; " ") | gsub(" +"; " ") | sub("^ +"; "") | sub(" +$"; "");
 
+# What a pane is running, as a command line with the leading path stripped:
+# "lazygit", "nvim src/handler.rs". Empty when the pane is sitting at its shell
+# prompt, since "fish" names every idle pane the same thing and names none of
+# them usefully. See collect.sh for where the process record comes from.
+def process_text($pane):
+  ($pane.process // null) as $info
+  | if $info == null then ""
+    else
+      (($info.foreground_processes // []) | last) as $top
+      | if $top == null or ($top.pid == $info.shell_pid) then ""
+        else
+          (($top.argv // [($top.name // "")]) | map(select(. != null and . != "")))
+          | if length == 0 then ""
+            else (.[0] |= (split("/") | last)) | join(" ")
+            end
+        end
+    end;
+
+# The name a row shows for a pane. An explicit rename is the user's own word for
+# it and wins; then what the pane is running; then whatever the shell put in the
+# terminal title.
+def pane_name($pane):
+  if (($pane.label // "") != "") then $pane.label
+  elif (process_text($pane) != "") then process_text($pane)
+  else ($pane.terminal_title_stripped // $pane.terminal_title // "")
+  end | clean;
+
 # ---------------------------------------------------------------------------
 
 . as $snap
@@ -87,7 +114,9 @@ def clean: (. // "") | gsub("[\t\r\n]"; " ") | gsub(" +"; " ") | sub("^ +"; "") 
         tab_number: ($tab.number // 0),
         status: ($agent.agent_status // $p.agent_status // "unknown"),
         cwd: ($p.foreground_cwd // $p.cwd // ""),
-        title: ($p.terminal_title_stripped // $p.terminal_title // "" | clean)
+        title: pane_name($p),
+        searchable: ([$p.label, process_text($p), $p.terminal_title_stripped, $p.terminal_title]
+                     | map(select(. != null and . != "")) | unique | join(" ") | clean)
       }
   ] as $entries
 
@@ -139,7 +168,8 @@ def render($kind; $e; $tab_text; $agent_text; $title; $extra_haystack):
         CYAN, ($agent_text | fit($w_agent)), RESET, " ",
         ($title | clean | fit($w_title)), " ",
         DIM, ($short_cwd | fit($w_cwd)), RESET] | join("")) as $coloured
-    | ([ws_haystack($ws), ($e.tab.label // ""), $agent_text, $status, $e.cwd, $title, $extra_haystack]
+    | ([ws_haystack($ws), ($e.tab.label // ""), $agent_text, $status, $e.cwd, $title,
+        ($e.searchable // ""), $extra_haystack]
        | map(select(. != null and . != "")) | join(" ") | clean) as $haystack
     | [ ($kind + "|" + $ws.workspace_id + "|" + ($e.pane.tab_id // $ws.active_tab_id // "") + "|" + ($e.pane.pane_id // "")),
         $e.cwd,
@@ -172,7 +202,7 @@ def active_entry($group):
       | ($group[0].ws) as $ws
       | active_entry($group) as $rep
       | ([$group[] | select(.agent != null)]) as $agent_entries
-      | ([$group[] | .cwd, .title, (.tab.label // ""), agent_text(.)]
+      | ([$group[] | .cwd, .title, (.searchable // ""), (.tab.label // ""), agent_text(.)]
          | map(select(. != null and . != "")) | unique | join(" ")) as $children
       | (if ($agent_entries | length) == 0 then ""
          elif ($agent_entries | length) == 1 then agent_text($agent_entries[0])

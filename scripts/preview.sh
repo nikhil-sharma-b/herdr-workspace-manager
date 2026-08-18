@@ -28,11 +28,25 @@ reset=$'\033[0m'
 
 if [[ $kind == c && -n $run_dir && -f $run_dir/snapshot.json ]]; then
   printf '%s%s%s\n' "$bold" "panes in this workspace" "$reset"
+  # Named the same way the rows are: an explicit rename, else what the pane is
+  # running, else whatever the shell put in the title.
   jq -r --arg ws "$workspace_id" --arg home "${HOME:-}" '
+      def running:
+        (.process // null) as $info
+        | if $info == null then ""
+          else (($info.foreground_processes // []) | last) as $top
+            | if $top == null or ($top.pid == $info.shell_pid) then ""
+              else (($top.argv // [($top.name // "")]) | map(select(. != null and . != "")))
+                   | if length == 0 then "" else (.[0] |= (split("/") | last)) | join(" ") end
+              end
+          end;
       (if has("result") then .result.snapshot else . end) as $s
       | ($s.panes // []) | map(select(.workspace_id == $ws))[]
       | ((.foreground_cwd // .cwd // "") | if ($home != "" and startswith($home)) then "~" + .[($home|length):] else . end) as $cwd
-      | "  " + ((.terminal_title_stripped // .terminal_title // .pane_id) | gsub("[\t\r\n]"; " "))
+      | (if ((.label // "") != "") then .label
+         elif (running != "") then running
+         else (.terminal_title_stripped // .terminal_title // .pane_id) end) as $name
+      | "  " + ($name | gsub("[\t\r\n]"; " "))
         + (if $cwd == "" then "" else "  ·  " + $cwd end)
     ' <"$run_dir/snapshot.json" 2>/dev/null || true
   printf '\n'

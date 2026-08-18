@@ -135,3 +135,21 @@ assert_contains "$output" "last workspace" "refusal message"
 assert_eq "1" "$(snapshot | jq -r '.result.snapshot.workspaces | length')" "workspace count after the refusal"
 
 rm -rf "$run_dir"
+
+check "the finder names a live pane for the program it is running"
+herdr workspace create --label runner --cwd "$HOME" --focus >/dev/null
+sleep 0.4
+runner=$(ws runner)
+runner_pane=$(snapshot | jq -r --arg w "$runner" '.result.snapshot.panes[] | select(.workspace_id == $w) | .pane_id' | head -n 1)
+herdr pane send-text "$runner_pane" 'less /etc/hostname' >/dev/null 2>&1 || true
+herdr pane send-keys "$runner_pane" Enter >/dev/null 2>&1 || true
+sleep 1.5
+run_dir=$(mktemp -d "${TMPDIR:-/tmp}/hwm-proc.XXXXXX")
+printf 'expanded' >"$run_dir/mode"
+HWM_RUN_DIR=$run_dir HWM_WIDTH=140 "$REPO_DIR/scripts/refresh.sh" >"$run_dir/rows"
+row=$(grep "^p|$runner|" "$run_dir/rows" | head -n 1 | cut -f3 | strip_ansi)
+assert_contains "$row" "less" "live pane named for its process"
+
+check "typing a live program's name selects its pane"
+assert_contains "$(filter_rows less <"$run_dir/rows" | cut -f1)" "p|$runner|" "live process match"
+rm -rf "$run_dir"

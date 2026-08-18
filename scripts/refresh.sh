@@ -4,6 +4,9 @@
 # This is the only place the finder queries the session: on open, on Ctrl-r,
 # and after a create or close. Typing, moving the selection and switching view
 # mode all re-render the stored snapshot instead (see render.sh).
+#
+# A refresh costs one snapshot plus one process lookup per pane (see
+# collect.sh) — a few milliseconds each, and never paid while the user types.
 
 set -euo pipefail
 
@@ -13,7 +16,7 @@ source "$script_dir/lib/common.sh"
 
 run_dir=${HWM_RUN_DIR:?HWM_RUN_DIR is required}
 
-if herdr api snapshot >"$run_dir/snapshot.next" 2>"$run_dir/snapshot.err"; then
+if "$script_dir/collect.sh" >"$run_dir/snapshot.next" 2>"$run_dir/snapshot.err"; then
   if jq -e 'has("result")' >/dev/null 2>&1 <"$run_dir/snapshot.next"; then
     mv "$run_dir/snapshot.next" "$run_dir/snapshot.json"
   else
